@@ -29,7 +29,6 @@ export class AuthService {
 
             registerDto.password = encryptPassword(registerDto.password, this.readEnvService.getEnv(EnvKeys.secretStringEncrypt));
             const userCreated = await this.userService.create(registerDto);
-            await this.emailService.sendEmail(registerDto.email, "Registro exitoso")
             return userCreated;
         } catch (error) {
             throw new BadRequestException(error.message);
