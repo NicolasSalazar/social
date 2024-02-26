@@ -1,0 +1,32 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model posts {
+  postCode  Int       @id(map: "pk_posts") @default(autoincrement()) @map("post_code")
+  userCode  Int       @map("user_code") 
+  title      String    @db.VarChar(255)
+  content    String    @db.VarChar(255)
+  likes      Int      @default(0)
+  createdAt DateTime  @default(now()) @db.Timestamp(6) @map("created_at")
+  updatedAt DateTime? @db.Timestamp(6) @map("updated_at")
+  deletedAt DateTime? @db.Timestamp(6) @map("deleted_at")
+  users      users     @relation(fields: [userCode], references: [userCode], onDelete: NoAction, onUpdate: NoAction, map: "fk_uses")
+}
+
+model users {
+  userCode  Int       @id(map: "pk_users") @default(autoincrement()) @map("user_code") 
+  fullName  String    @db.VarChar(255) @map("full_name") 
+  age        Int
+  email      String    @unique(map: "email_unique") @db.VarChar(255)
+  password   String    @db.VarChar(255)
+  createdAt DateTime  @default(now()) @db.Timestamp(6) @map("created_at")
+  updatedAt DateTime? @db.Timestamp(6) @map("updated_at")
+  deletedAt DateTime? @db.Timestamp(6) @map("deleted_at")
+  posts      posts[]
+}
